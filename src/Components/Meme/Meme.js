@@ -1,5 +1,4 @@
 import React from "react";
-import MemeData from "../../MemeData";
 import TrollFace from "../../Images/troll-face.png";
 
 export default function Meme() {
@@ -10,26 +9,26 @@ export default function Meme() {
         randomImg: `${TrollFace}`
     })
 
-    const [allMemeImg, setAllMemeImg] = React.useState(MemeData);
+    const [allMeme, setAllMemes] = React.useState([]);
 
-    function getMeme() {
-        const memesArray = allMemeImg.data.memes
-        const randomElement = Math.floor(Math.random() * memesArray.length)
-        const url = memesArray[randomElement].url
+    React.useEffect(function() {
+        // console.log("Effect ran")
+        fetch("https://api.imgflip.com/get_memes")
+            .then(res => res.json())
+            .then(data => setAllMemes(data.data.memes))
+    }, [])
+
+
+    function getMemeImage() {
+        // const memesArray = allMeme
+        const randomElement = Math.floor(Math.random() * allMeme.length)
+        const url = allMeme[randomElement].url
         setMeme(prevMeme => ({
             ...prevMeme,
             randomImg: url
         })) 
 
-        // url = memesArray[randomElement].url
-        // console.log(url)
     }
-
-
-    // function setAllMemeImgFunc() {
-    //     return setAllMemeImg
-    // }
-    // console.log(setAllMemeImgFunc())
 
     function handleChange(event) {
         const {name, value} = event.target;
@@ -59,7 +58,7 @@ export default function Meme() {
                     value={meme.bottomText}
                     onChange={handleChange}
                 />
-                <button type="button" className="get-meme--btn" onClick={getMeme}> Get a new meme image 🖼</button>
+                <button type="button" className="get-meme--btn" onClick={getMemeImage}> Get a new meme image 🖼</button>
             </div>
 
             <div className="meme">
